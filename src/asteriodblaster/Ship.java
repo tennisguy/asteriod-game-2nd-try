@@ -4,6 +4,8 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Area;
 
 public class Ship
 {
@@ -47,29 +49,30 @@ public class Ship
     int rotateAmount = 180;
     int shipHeading = 0;
     int shipCourse = 0;
+    private AffineTransform motherShipAT;
     int shipDeltaX = 0;
     int shipDeltaY = 0;
     int shipX = 900;
     int shipY = 500;
     double shipSpeed = 1;
-
+    Area shipArea;
     Polygon shipShape = new Polygon(shipXpoints, shipYpoints,
             shipXpoints.length);
     Polygon exhaust1Shape = new Polygon(exhaust1Xpoints,
             exhaust1Ypoints, exhaust1Xpoints.length);
     Polygon exhaust2Shape = new Polygon(exhaust2Xpoints,
             exhaust2Ypoints, exhaust2Xpoints.length);
-    
-    
+
     public void paintSelf(Graphics2D g2)
     {
+        shipArea = new Area(shipShape);
         deltaX = (int) (Math.sin(Math.toRadians(shipCourse)) * shipSpeed);
         deltaY = (int) (Math.cos(Math.toRadians(shipCourse)) * -shipSpeed);
         //System.out.println("shipData shipCourse = " + shipCourse);
         // trick:  we move the screen, not the ship!
         shipX = shipX + deltaX;
         shipY = shipY + deltaY;
-        
+
         g2.translate(shipX, shipY);
 
         //g2.rotate(Math.toRadians(rotateAmount))e
@@ -78,7 +81,8 @@ public class Ship
         // draw ship
         g2.setStroke(new BasicStroke(.02f));
         g2.setColor(Color.BLUE);
-        g2.draw(shipShape);
+        g2.setColor(Color.GREEN);
+        g2.draw(shipArea);
 
         //g2.fillPolygon(shipShape);
 
@@ -92,10 +96,10 @@ public class Ship
 
         // draw exhaust2
         g2.draw(exhaust2Shape);
-        g2.fillPolygon(exhaust2Shape);        
-        
+        g2.fillPolygon(exhaust2Shape);
+
         g2.scale(.25, .25);
-        
+
     }
 
     public void setShipCourse(int shipCourseLuke)
